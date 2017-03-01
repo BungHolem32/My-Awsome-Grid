@@ -1,0 +1,63 @@
+@import (once) "_3-rulset-n-functions";
+
+/*USE IN MOBILE*/
+/*RESET CSS AT DEFAULT LAYOUT*/
+.reset-css;
+.generate-columns(100, 2, xs);
+.generate-column(33,xs,33.333);
+#margin-and-padding-creation>.first-method> .init(margin, mrg, xs, @positions, 1);
+#margin-and-padding-creation>.first-method> .init(padding, pad, xs, @positions, 1);
+
+/*USE IN TABLET  SCREENS*/
+@media (min-width : 640px) and (max-width : 997px) {
+  .generate-columns(100, 2, sm);
+  .generate-column(33,sm,33.333);
+
+  /*WRAP ONLY 80 PRESENT OF THE SCREEN*/
+  .wrapper {
+    max-width : 640px;
+    .generate-columns(100, 2, sm);
+    .generate-column(33,sm,33.333);
+
+  }
+
+  #margin-and-padding-creation>.first-method> .init(margin, mrg, sm, @positions, 1);
+  #margin-and-padding-creation>.first-method> .init(padding, pad, sm, @positions, 1);
+}
+
+
+
+/*USE IN REGULAR SCREENS */
+@media (min-width : 998px) and (max-width : 1199px) {
+  .generate-columns(100, 2, md);
+  .generate-column(33,md,33.333);
+  
+  /*WRAP ONLY 80 PRESENT OF THE SCREEN*/
+  .wrapper {
+    max-width : 998px;
+    .generate-columns(100, 2, md);
+    .generate-column(33,md,33.333);
+  }
+
+  #margin-and-padding-creation>.first-method> .init(margin, mrg, md, @positions, 1);
+  #margin-and-padding-creation>.first-method> .init(padding, pad, md, @positions, 1);
+}
+
+/*USE IN WIDE SCREENS*/
+@media (min-width : 1200px) {
+  .generate-columns(100, 2, lg);
+  .generate-column(33,lg,33.333);
+
+  .wrapper {
+    max-width : 1200px;
+    .generate-columns(100, 2, lg);
+    .generate-column(33,lg,33.333);
+  }
+
+  #margin-and-padding-creation>.first-method> .init(margin, mrg, lg, @positions, 1);
+  #margin-and-padding-creation>.first-method> .init(padding, pad, lg, @positions, 1);
+}
+
+/*ADD GENERAL CLASS TO ALL OF THE GRIDS*/
+#margin-and-padding-creation>.second-method> .init(margin, mrg, all, @positions, 1, 5, 1);
+#margin-and-padding-creation>.second-method> .init(padding, pad, all, @positions, 1, 5, 1);

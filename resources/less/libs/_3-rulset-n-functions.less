@@ -1,0 +1,168 @@
+@import (once) "_2-for";
+
+/*=========================================CREATE COLUMNS DYNAMICALLY================================================*/
+.generate-columns(@run-until,@current-index:1,@screen-size) when (@current-index=<@run-until) {
+
+  .gp-@{screen-size}-@{current-index} {
+    width : unit(@current-index, ~"%");
+  }
+  .generate-columns(@run-until, (@current-index + 2), @screen-size);
+}
+/*RUN ONE TIME ON 33 SIZE*/
+.generate-column(@current-index:33,@screen-size,@other) when (@current-index<100){
+
+  .gp-@{screen-size}-@{current-index} {
+    width : unit(@other, ~"%");
+  }
+  .generate-column((@current-index + 66),@screen-size,(@other + 65.667))
+}
+
+#margin-and-padding-creation {
+
+  /*=================DYNAMIC CREATION OF MARGIN / PADDING / REST ( METHOD 1 - LESS LOOP MORE LINES OF CODE)=============*/
+  .first-method {
+    .init(@property,@prop-class-name,@screen-size,@positions,@width) {
+
+      /*LONG WAY*/
+      .@{screen-size}-@{prop-class-name}-long { @{property}: unit(@width, em) unit(@width, em) unit(@width, em) unit(@width, em) }
+      .@{screen-size}-@{prop-class-name}-hf-long { @{property}: unit(@width/2, em) unit(@width/2, em) unit(@width/2, em) unit(@width/2, em) }
+      .@{screen-size}-@{prop-class-name}-t-long { @{property}: unit(@width, em) 0 0 0 }
+      .@{screen-size}-@{prop-class-name}-t-hf-long { @{property}: unit(@width/2, em) 0 0 0 }
+      .@{screen-size}-@{prop-class-name}-r-long { @{property}: 0 unit(@width, em) 0 0 }
+      .@{screen-size}-@{prop-class-name}-r-hf-long { @{property}: 0 unit(@width/2, em) 0 0 }
+      .@{screen-size}-@{prop-class-name}-b-long { @{property}: 0 0 unit(@width, em) 0 }
+      .@{screen-size}-@{prop-class-name}-b-hf-long { @{property}: 0 0 unit(@width/2, em) 0 }
+      .@{screen-size}-@{prop-class-name}-l-long { @{property}: 0 0 0 unit(@width, em) }
+      .@{screen-size}-@{prop-class-name}-l-hf-long { @{property}: 0 0 0 unit(@width/2, em) }
+
+      /*SORT WAY */
+      .@{screen-size}-@{prop-class-name} { @{property}: unit(@width, em) }
+      .@{screen-size}-@{prop-class-name}-hf { @{property}: unit(@width/2, em) }
+      .@{screen-size}-@{prop-class-name}-t { @{property}-top : unit(@width, em) }
+      .@{screen-size}-@{prop-class-name}-t-hf { @{property}-top : unit(@width/2, em) }
+      .@{screen-size}-@{prop-class-name}-r { @{property}-right : unit(@width, em) }
+      .@{screen-size}-@{prop-class-name}-r-hf { @{property}-right : unit(@width/2, em) }
+      .@{screen-size}-@{prop-class-name}-b { @{property}-bottom : unit(@width, em) }
+      .@{screen-size}-@{prop-class-name}-b-hf { @{property}-bottom : unit(@width/2, em) }
+      .@{screen-size}-@{prop-class-name}-l { @{property}-left : unit(@width, em) }
+      .@{screen-size}-@{prop-class-name}-l-hf { @{property}-left : unit(@width/2, em) }
+    }
+  }
+
+  /*=CREATE PROP EACH TIME WHEN THE CURRENT NUMBER DOESN'T  THEN THE LIMIT ( METHOD 2 - MORE LOOPS FEWER LINES OF CODE)=*/
+  .second-method {
+    .init(@property,@prop-class-name,@screen-size,@positions,@current-number,@run-until,@width) when (@run-until>@current-number) and not (@screen-size = all) {
+      @position : extract(@positions, @current-number);
+      /*MARGIN*/
+      .@{screen-size}-@{prop-class-name}-@{position} {
+          @{property}-@{position}: unit(@width, ~"%");
+      }
+      /*HAF MARGIN*/
+      .@{screen-size}-@{prop-class-name}-@{position}-hf {
+          @{property}-@{position}: unit(@width/2, ~"%");
+      }
+      #margin-and-padding-creation>.second-method> .init(@property, @prop-class-name, @screen-size, @positions,(@current-number + 1), @run-until, @width);
+    }
+
+    /*============================CREATE PROP EACH TIME WHEN THE CURRENT NUMBER PASS THE LIMIT============================*/
+    .init(@property,@prop-class-name,@screen-size,@positions,@current-number,@run-until,@width) when (@current-number=5) and not (@screen-size = all){
+
+      .@{screen-size}-@{prop-class-name} {
+          @{property}: unit(@width, ~"%");
+      }
+
+      .@{screen-size}-@{prop-class-name} {
+          @{property}: unit(@width/2, ~"%");
+      }
+    }
+
+    /*========================================ADD PADDING AND MARGIN TO ALL SIZES=====================================*/
+    .init(@property,@prop-class-name,@screen-size,@positions,@current-number,@run-until,@width) when (@run-until>@current-number) and (@screen-size=all) {
+      @position : extract(@positions, @current-number);
+      .@{prop-class-name}-@{position} {
+          @{property}-@{position}: unit(@width, ~"%");
+      }
+      .@{prop-class-name}-@{position}-hf {
+          @{property}-@{position}: unit(@width/2, ~"%");
+      }
+      #margin-and-padding-creation>.second-method> .init(@property, @prop-class-name, @screen-size, @positions, (@current-number+1), @run-until, @width);
+    }
+
+    /*======================================== ADD GENERAL PADDING AND MARGIN TO ALL SIZES============================*/
+    .init(@property,@prop-class-name,@screen-size,@positions,@current-number,@run-until,@width) when (@current-number=5) and (@screen-size=all) {
+      .@{prop-class-name} {
+          @{property}: unit(@width, ~"%");
+      }
+
+      .@{prop-class-name} {
+          @{property}: unit(@width/2, ~"%");
+      }
+    }
+  }
+}
+
+/*===============================================MARGIN AS MIXIN======================================================*/
+#margin-set {
+  .margin(@top,@right,@bottom,@left) {
+
+    & when (@direction = rtl) {
+      margin : @top @left @bottom @right;
+    }
+    & when (@direction = ltr) {
+      margin : @top @right @bottom @left;
+    }
+  }
+
+  .margin(@top,@right:null,@bottom:null,@left:null) when (@bottom=null) and (@right=null) and  (@left=null){
+    margin : @top @top @top @top;
+  }
+  .margin(@top,@right:null,@bottom:null,@left:null) when (@bottom=null) and (@left=null) and not(@right=null) {
+    margin : @top @right @top @right;
+  }
+  .margin(@top,@right:null,@bottom:null,@left:null) when (@left=null) and not(@bottom=null) and not(@right=null) {
+    margin : @top @right @bottom @right;
+  }
+}
+
+/*===============================================PADDING AS MIXIN=====================================================*/
+#padding-set {
+  /*PADDING CREATION */
+  .padding(@top,@right,@bottom,@left) {
+
+    & when (@direction = rtl) {
+      padding : @top @left @bottom @right;
+    }
+    & when (@direction = ltr) {
+      padding : @top @right @bottom @left;
+    }
+  }
+  .padding(@top,@right:null,@bottom:null,@left:null) when (@right=null) and (@bottom=null) and (@left=null){
+    padding : @top @top @top @top;
+  }
+  .padding(@top,@right:null,@bottom:null,@left:null) when (@bottom=null) and (@left=null) and not(@right=null) {
+    padding : @top @right @top @right;
+  }
+  .padding(@top,@right:null,@bottom:null,@left:null) when (@left=null) and not(@bottom=null) and not(@right=null) {
+    padding : @top @right @bottom @right;
+  }
+
+}
+/*===========================================CREATE BUTTONS DYNAMICALLY===============================================*/
+.for(@btn-classes);
+.-each(@className) {
+  .@{className}:extend(.btn-general all) {
+    @text-shadow : "@{className}-text-shadow";
+    @border-color : "@{className}-border-color";
+    @bg-color : "@{className}-color";
+    @box-shadow : "@{className}-box-shadow";
+    text-shadow      : @@text-shadow;
+    border           : 1px solid @@border-color;
+    background-color : @@bg-color;
+    box-shadow       : @@box-shadow;
+    &:hover {
+      //background : spin(saturate(@btn-success-color, 5), 5%);
+      background : spin(saturate(@@bg-color, 10%), 10);
+    }
+  }
+}
+
