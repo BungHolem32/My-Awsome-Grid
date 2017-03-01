@@ -6,5 +6,5 @@ getting stated:
 1. clone this project.
 2. type <code>composer install </code>
 3. add the css file into your file like soo : <br>
-<code> <link src="path/to/you/css/directory/style.css   </code>
+<code> <link src="path/to/you/css/directory/style.css>   </code>
 4. enjoy.....
